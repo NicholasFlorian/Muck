@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="ColorPrimary">#43966F</color>
+    <color name="ColorPrimaryDark">#357A5A</color>
+    <color name="ColorAccent">#3D9DE2</color>
+    <color name="ColorAccentX"> #E83F6F</color>
+    <color name="ColorAccentY">#FFBF00</color>
+    <color name="ColorBackground">#FEFFFE</color>
+    <color name="ColorMidBackground"> #CCE8DB </color>
+    <color name="ColorDarkBackground">#7AC1A0</color>
+    <color name="ColorNavigationBar">#08140E</color>
+    <color name="MuckOptionHeader">#889388</color>
+    <color name="MuckOptionText">@color/MuckDarkText</color>
+    <color name="MuckOptionField">#666F66</color>
+    <color name="MuckDarkText">#0B1C13</color>
 </resources>

@@ -1,17 +1,17 @@
 package prayhard.muck;
 
-import java.util.Date;
 
+import java.util.Calendar;
 
 public class Mish {
 
     //meta data
-    private Date TimeCreated;
-    private Date TimeLastEdited;
-    private Date TimeToCompleteBy;
-    private Date TimeCompletedOn;
+    private Calendar TimeCreated;
+    private Calendar TimeLastEdited;
+    private Calendar TimeToCompleteBy;
+    private Calendar TimeCompletedOn;
     private String CreatorID;
-    private String OnlineID;
+    private String UniversalID;
 
     //functional data
     private String Title;
@@ -21,17 +21,16 @@ public class Mish {
     private boolean IsReminder;
     private boolean IsComplete;
 
+
     public Mish() {
 
-        this.TimeCreated        = new Date(0);      //create new dates as the current time
-        this.TimeLastEdited     = new Date(0);      //create new dates as the current time
-        this.TimeToCompleteBy   = new Date(0);      //set
-        this.TimeCompletedOn    = new Date(0);      //set to 0 as encoded incomplete- see IsComplete
+        this.TimeCreated        = getEmptyCalendar();      //create new dates as the current time
+        this.TimeLastEdited     = getEmptyCalendar();      //create new dates as the current time
+        this.TimeToCompleteBy   = getEmptyCalendar();      //set
+        this.TimeCompletedOn    = getEmptyCalendar();      //set to 0 as encoded incomplete- see IsComplete
 
         //more meta data
         this.CreatorID = "";
-        //TODO request online access create OnlineID
-        this.OnlineID = "";
 
         //functional data
         this.Title      = "";
@@ -40,20 +39,20 @@ public class Mish {
         this.IsReminder = false;
         this.IsComplete = false;
 
+        //Set as empty
+        this.UniversalID = "";
+
     }
 
+    public Mish(Calendar TimeToCompleteBy, String CreatorID, String Title, String Body, boolean HasDate, boolean IsReminder) {
 
-    public Mish(Date TimeToCompleteBy, String CreatorID, String Title, String Body, boolean HasDate, boolean IsReminder) {
-
-        this.TimeCreated        = new Date();           //create new dates as the current time
-        this.TimeLastEdited     = new Date();           //create new dates as the current time
-        this.TimeToCompleteBy   = TimeToCompleteBy;     //set
-        this.TimeCompletedOn    = new Date(0);          //set to 0 as encoded incomplete- see IsComplete
+        this.TimeCreated        = Calendar.getInstance();   //create new dates as the current time
+        this.TimeLastEdited     = Calendar.getInstance();   //create new dates as the current time
+        this.TimeToCompleteBy   = TimeToCompleteBy;         //set
+        this.TimeCompletedOn    = getEmptyCalendar();       //set to 0 as encoded incomplete- see IsComplete
 
         //more meta data
         this.CreatorID = CreatorID;
-        //TODO request online access create OnlineID
-        this.OnlineID = "";
 
         //functional data
         this.Title      = Title;
@@ -62,172 +61,250 @@ public class Mish {
         this.IsReminder = IsReminder;
         this.IsComplete = false;
 
+        //createUniversalId
+        this.UniversalID = generateUniversalID();
     }
+
+    public Mish(String UniversalID, Calendar TimeToCompleteBy, String CreatorID, String Title, String Body, boolean HasDate, boolean IsReminder) {
+
+        this.TimeCreated        = Calendar.getInstance();   //create new dates as the current time
+        this.TimeLastEdited     = Calendar.getInstance();   //create new dates as the current time
+        this.TimeToCompleteBy   = TimeToCompleteBy;         //set
+        this.TimeCompletedOn    = getEmptyCalendar();       //set to 0 as encoded incomplete- see IsComplete
+
+        //more meta data
+        this.CreatorID = CreatorID;
+
+        //functional data
+        this.Title      = Title;
+        this.Body       = Body;
+        this.HasDate    = HasDate;
+        this.IsReminder = IsReminder;
+        this.IsComplete = false;
+
+        //createUniversalId
+        this.UniversalID = UniversalID;
+    }
+
     public String toString(){
 
         //var
         String Out;
 
-
-        Out = new String("MISH:\n");
-
         //assign
-        Out = Out.concat("CREATED_ON: " + TimeCreated.toString() + "\n");
-        Out = Out.concat("LAST_EDITED: " + TimeLastEdited.toString() + "\n");
-        Out =  Out.concat("COMPLETE_BY: " + TimeToCompleteBy.toString() + "\n");
-        Out =  Out.concat("COMPLETED_ON: " + TimeCompletedOn.toString() + "\n\n");
-
-        Out =  Out.concat("USER_ID: " + CreatorID.toString() + "\n\n");
-        //Todo do the online id
-
-        Out =  Out.concat("TILE: " + Title.toString() + "\n");
-        Out =  Out.concat("BODY: " + Body.toString() + "\n");
-        Out =  Out.concat("HAS_DATE: " + HasDate + "\n");
-        Out =  Out.concat("IS_REMINDER: " + IsReminder + "\n");
-        Out =  Out.concat("IS_COMPLETE: " + IsComplete + "\n");
+        Out = new String("MISH:\n");
+        Out = Out.concat("\tCREATED_ON: " + TimeCreated + "\n");
+        Out = Out.concat("\tLAST_EDITED: " + TimeLastEdited.toString() + "\n");
+        Out =  Out.concat("\tCOMPLETE_BY: " + TimeToCompleteBy.toString() + "\n");
+        Out =  Out.concat("\tCOMPLETED_ON: " + TimeCompletedOn.toString() + "\n\n");
+        Out =  Out.concat("\tUSER_ID: " + CreatorID.toString() + "\n\n");
+        Out =  Out.concat("\tTILE: " + Title.toString() + "\n");
+        Out =  Out.concat("\tBODY: " + Body.toString() + "\n");
+        Out =  Out.concat("\tHAS_DATE: " + HasDate + "\n");
+        Out =  Out.concat("\tIS_REMINDER: " + IsReminder + "\n");
+        Out =  Out.concat("\tIS_COMPLETE: " + IsComplete + "\n\n");
 
 
         return Out;
 
     }
 
+    private String generateUniversalID(){
+
+        //var
+        String Out;
+        String Word;
+
+
+        //assign
+        if(Title.equals("") && !Body.equals(""))
+            Word = Body;
+        else if(Title.equals("") && Body.equals(""))
+            Word = "/";
+        else
+            Word = Title;
+
+        Out = "";
+        Out = Out.concat(CreatorID + "." + Word + ".");
+        Out = Out.concat(TimeCreated.get(Calendar.YEAR) + "");
+        Out = Out.concat(TimeCreated.get(Calendar.MONTH)+ "");
+        Out = Out.concat(TimeCreated.get(Calendar.DAY_OF_MONTH) +  "");
+        Out = Out.concat(TimeCreated.get(Calendar.HOUR_OF_DAY) + "");
+        Out = Out.concat(TimeCreated.get(Calendar.MINUTE) + "");
+        /*Out = Out.concat(TimeToCompleteBy.get(Calendar.YEAR) + ".");
+        Out = Out.concat(TimeToCompleteBy.get(Calendar.MONTH)+ ".");
+        Out = Out.concat(TimeToCompleteBy.get(Calendar.DAY_OF_MONTH) +  ".");
+        Out = Out.concat(TimeToCompleteBy.get(Calendar.HOUR_OF_DAY) + ".");
+        Out = Out.concat(TimeToCompleteBy.get(Calendar.MINUTE) + ".");*/
+
+
+        return Out;
+    }
 
     //Accessor Functions
-    public Date GetTimeCreated(){
+    public Calendar getTimeCreated(){
 
         return this.TimeCreated;
     }
 
-    public Date GetTimeLastEdited(){
+    public Calendar getTimeLastEdited(){
 
         return this.TimeLastEdited;
     }
 
-    public Date GetTimeToCompletedBy(){
+    public Calendar getTimeToCompleteBy(){
 
         return this.TimeToCompleteBy;
     }
 
-    public Date GetTimeCompletedOn(){
+    public Calendar getTimeCompletedOn(){
 
         return this.TimeCompletedOn;
     }
 
-    public String GetCreatorId(){
+    public String getCreatorID(){
 
         return this.CreatorID;
     }
 
-    public String GetOnlineId(){
+    public String getUniversalID(){
 
-        return this.OnlineID;
+        return this.UniversalID;
     }
 
-    public String GetTitle() {
+    public String getTitle() {
 
         return this.Title;
     }
 
-    public String GetBody(){
+    public String getBody(){
 
         return this.Body;
     }
 
-    public boolean GetHasDate(){
+    public boolean getHasDate(){
 
         return this.HasDate;
     }
 
-    public boolean GetIsReminder(){
+    public boolean getIsReminder(){
 
         return this.IsReminder;
     }
 
-    public boolean GetIsComplete(){
+    public boolean getIsComplete(){
 
         return this.IsComplete;
     }
 
     //Mutator Functions
-    public void SetTimeToCompleteBy(Date TimeToCompleteBy){
+    public void setTimeToCompleteBy(Calendar TimeToCompleteBy){
 
         //update last edited time
-        this.TimeLastEdited = new Date();
+        this.TimeLastEdited = Calendar.getInstance();
 
         this.TimeToCompleteBy = TimeToCompleteBy;
     }
 
-    public void SetTitle(String Title){
+    public void setTimeCreated(Calendar TimeCreated){
 
         //update last edited time
-        this.TimeLastEdited = new Date();
+        this.TimeLastEdited = Calendar.getInstance();
+
+        this.TimeCreated = TimeCreated;
+    }
+
+    public void setTimeCompletedOn(Calendar TimeCompletedOn){
+
+        //update last edited time
+        this.TimeLastEdited = Calendar.getInstance();
+
+        this.TimeCompletedOn = TimeCompletedOn;
+    }
+
+    public void setUniversalID(String UniversalID){
+
+        this.TimeLastEdited = Calendar.getInstance();
+
+        this.UniversalID = UniversalID;
+    }
+
+    public void setCreatorID(String CreatorID){
+
+        //update last edited time
+        this.TimeLastEdited = Calendar.getInstance();
+
+        this.CreatorID = CreatorID;
+    }
+
+    public void setTitle(String Title){
+
+        //update last edited time
+        this.TimeLastEdited = Calendar.getInstance();
 
         this.Title = Title;
     }
 
-    public void SetBody(String Body){
+    public void setBody(String Body){
 
         //update last edited time
-        this.TimeLastEdited = new Date();
+        this.TimeLastEdited = Calendar.getInstance();
 
         this.Body = Body;
     }
 
-    public void SetIsReminder(boolean IsReminder){
+    public void setIsReminder(boolean IsReminder){
 
         //update last edited time
-        this.TimeLastEdited = new Date();
+        this.TimeLastEdited = Calendar.getInstance();
 
         this.IsReminder = IsReminder;
     }
 
-    public void SetHasDate(boolean HasDate){
+    public void setHasDate(boolean HasDate){
 
         //update last edited time
-        this.TimeLastEdited = new Date();
+        this.TimeLastEdited = Calendar.getInstance();
 
         this.HasDate = HasDate;
     }
 
-    public void SetAsComplete(){
+    public void setIsComplete(boolean IsComplete){
 
         //var
-        Date mDate = new Date();
+        Calendar Temp = Calendar.getInstance();
 
-        //update last edited time
-        this.TimeLastEdited = mDate;
-        this.TimeCompletedOn = mDate;
-    }
-
-    public void UpdateCompletion(Boolean IsComplete){
 
         //update completion time
         if(!this.IsComplete && IsComplete){
 
-            this.TimeCompletedOn = new Date();
+            this.TimeCompletedOn = Calendar.getInstance();
 
         }
 
         //update last edited time
-        this.TimeLastEdited = this.TimeCompletedOn; //keep these times the same
-
-        this.IsComplete = IsComplete;
+        this.TimeLastEdited = Temp;
+        this.TimeCompletedOn = Temp;
     }
 
-    public boolean UpdateOnlineID(String OnlineID){
+    static Calendar getEmptyCalendar(){
 
-        //set only if not set yet
-        if(this.OnlineID.equals("")){
+        //obj
+        Calendar Temp = Calendar.getInstance();
 
-            this.OnlineID = OnlineID;
+        //Assign
+        Temp.set(0,0,0,0,0, 0);
+        Temp.set(Calendar.DAY_OF_YEAR, 0);
+        Temp.set(Calendar.DAY_OF_WEEK, 0);
+        Temp.set(Calendar.DAY_OF_WEEK_IN_MONTH, 0);
+        Temp.set(Calendar.AM_PM, 0);
+        Temp.set(Calendar.HOUR, 0);
+        Temp.set(Calendar.MILLISECOND, 0);
 
-            return true;
-        }
+        //This leaves only the locations, raw offsets, daylight savings, and zone offset correct
 
-        return false;
+        return Temp;
+
     }
-
-
-
 }
 

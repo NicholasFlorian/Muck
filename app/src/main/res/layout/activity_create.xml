@@ -6,14 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".Create">
 
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,8 +17,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/muck_soft_rectangle"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <!--Main body goes here -->
 
@@ -31,6 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mish Title"
+                android:textAppearance="@style/MuckOptionHeader"
                 android:textSize="20sp"
                 tools:layout_editor_absoluteX="44dp"
                 tools:layout_editor_absoluteY="51dp" />
@@ -50,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Body"
+                android:textAppearance="@style/MuckOptionHeader"
                 android:textSize="20sp"
                 tools:layout_editor_absoluteX="44dp"
                 tools:layout_editor_absoluteY="51dp" />
@@ -60,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textMultiLine"
+
                 android:text=""
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="118dp" />
@@ -69,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Options"
+                android:textAppearance="@style/MuckOptionHeader"
                 android:textSize="20sp"
                 tools:layout_editor_absoluteX="44dp"
                 tools:layout_editor_absoluteY="51dp" />
@@ -79,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Include A Date"
+                android:textAppearance="@style/MuckOptionText"
                 android:textSize="17sp"
                 tools:layout_editor_absoluteX="26dp"
                 tools:layout_editor_absoluteY="241dp" />
@@ -88,28 +95,104 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:animateLayoutChanges="true"
                 android:text="Set Reminder"
+                android:textAppearance="@style/MuckOptionText"
                 android:textSize="17sp"
                 tools:layout_editor_absoluteX="26dp"
                 tools:layout_editor_absoluteY="241dp" />
 
-            <!--TODO add date option, dynamic pop up, and date select widget -->
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/LayoutDay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
+                android:animateLayoutChanges="true">
 
+                <TextView
+                    android:id="@+id/TextViewDayTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Date"
+                    android:textAppearance="@style/MuckOptionText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/TextViewDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textAppearance="@style/MuckOptionField"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/LayoutTime"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:animateLayoutChanges="true">
+
+                <TextView
+                    android:id="@+id/TextViewTimeTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Time"
+                    android:textAppearance="@style/MuckOptionText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/TextViewTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textAppearance="@style/MuckOptionField"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/buttonFin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/muck_button"
+                    android:text="Done"
+                    android:textAppearance="@style/MuckOptionText"
+                    android:textColor="@color/ColorBackground"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
         </LinearLayout>
-
-
     </ScrollView>
-
-    <Button
-        android:id="@+id/buttonFin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Done"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
 </android.support.constraint.ConstraintLayout>

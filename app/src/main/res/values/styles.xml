@@ -3,9 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="colorAccent">@color/ColorAccent</item>
+        <item name="panelBackground">@color/ColorBackground</item>
+        <item name="android:actionMenuTextColor">@color/ColorBackground</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +18,43 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="MuckOptionHeader" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckOptionHeader</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="MuckOptionText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckOptionText</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="MuckOptionField" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckOptionField</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="MuckTitle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckDarkText</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_gravity">left</item>
+    </style>
+
+    <style name="MuckBody" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckOptionText</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_gravity">left</item>
+    </style>
+
+    <style name="MuckDate" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/MuckOptionField</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_gravity">left</item>
+    </style>
+
+    <style name="MuckTheme" parent="AppTheme" >
+        <item name="android:colorBackground">@color/ColorBackground</item>
+    </style>
 
 </resources>

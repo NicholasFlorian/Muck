@@ -9,6 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+import java.util.Vector;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -17,21 +26,39 @@ public class HomeView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.content_home_view);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //widget
+        FloatingActionButton Fab;
+
+
+        //assign
+        Fab = findViewById(R.id.fab);
+
+
+        //start of activity functions
+        setList();
+
+
+        //Fab listener
+        Fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
                 runCreate();
 
             }
         });
+
+    }
+
+    //resume update
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        //on resuming the application
+        //setText();
+        setList();
     }
 
     @Override
@@ -58,8 +85,49 @@ public class HomeView extends AppCompatActivity {
 
     public void runCreate(){
 
-        Intent intent = new Intent(this, Create.class);
-        startActivity(intent);
-
+        startActivity(new Intent(this, Create.class));
     }
+
+    public void setText(){
+        TextView mView = findViewById(R.id.textView);
+       // Vector<Mish> Mine = MuckFileExec.ReadMishes(this);
+        mView.setText(MuckFileExec.read(this));
+    }
+
+    public void setList(){
+
+        //widget
+        ListView ListViewMishes;
+
+        //obj
+        MishArrayAdapter<String> MishArray;
+        Vector<Mish> Mishes;
+        List<String> ids;
+
+
+        //initialize
+        ids = new Vector<>();
+
+
+        //assign
+        Mishes = MuckFileExec.createVectorMish(
+                this,
+                MuckFileExec.read(this));
+
+        for(int i = 0; i < Mishes.size(); i++)
+            ids.add(Mishes.get(i).getUniversalID());
+
+        //assign to layouts
+        MishArray = new MishArrayAdapter<>(
+                this,
+                Mishes,
+                ids);
+
+        //assign to app
+        ListViewMishes = findViewById(R.id.listViewMishes);
+        ListViewMishes.setAdapter(MishArray);
+
+        MishArray.notifyDataSetChanged();
+    }
+
 }

@@ -24,6 +24,7 @@
         <activity
             android:name=".Create"
             android:label="Create a New Mish"
+            android:theme="@style/createTheme"
             android:parentActivityName=".HomeView"
             android:windowSoftInputMode="stateHidden" />
         <activity

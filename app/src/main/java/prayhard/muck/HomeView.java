@@ -1,9 +1,11 @@
 package prayhard.muck;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -48,7 +50,6 @@ public class HomeView extends AppCompatActivity {
 
             }
         });
-
     }
 
     //resume update
@@ -68,6 +69,7 @@ public class HomeView extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -76,23 +78,46 @@ public class HomeView extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_settings){
+
+            startActivity(new Intent(this, Settings.class));
+        }
+        else if(id == R.id.action_delete){
+
+            //todo more verbose deletion settings
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            deleteAll();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                    }
+                }
+            };
+
+            //build the dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage("Delete all Mishes,\nare you sure?");
+            builder.setPositiveButton("Yas", dialogClickListener);
+            builder.setNegativeButton("Nah", dialogClickListener).show();
+
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public void runCreate(){
 
         startActivity(new Intent(this, Create.class));
     }
 
-    public void setText(){
-        TextView mView = findViewById(R.id.textView);
-       // Vector<Mish> Mine = MuckFileExec.ReadMishes(this);
-        mView.setText(MuckFileExec.read(this));
-    }
 
     public void setList(){
 
@@ -128,6 +153,12 @@ public class HomeView extends AppCompatActivity {
         ListViewMishes.setAdapter(MishArray);
 
         MishArray.notifyDataSetChanged();
+    }
+
+    private void deleteAll(){
+
+        MuckFileExec.delete(this);
+        this.setList();
     }
 
 }

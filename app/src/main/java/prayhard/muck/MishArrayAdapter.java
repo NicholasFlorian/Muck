@@ -1,14 +1,20 @@
 package prayhard.muck;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Constraints;
+import android.support.constraint.solver.widgets.WidgetContainer;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -33,6 +39,7 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         //layout
         LayoutInflater inflater;
         View rowView;
+        ConstraintLayout constraintLayout;
 
         //widget
         TextView title;
@@ -49,6 +56,7 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         //assign
         inflater = (LayoutInflater) activity.getSystemService(ContextWrapper.LAYOUT_INFLATER_SERVICE);
         rowView = inflater.inflate(R.layout.layout_mish, parent, false);
+        constraintLayout = rowView.findViewById(R.id.main);
 
         title       = rowView.findViewById(R.id.textViewTitle);
         due         = rowView.findViewById(R.id.textViewDue);
@@ -57,17 +65,95 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         countDown   = rowView.findViewById(R.id.textViewCountDown);
         divider     = rowView.findViewById(R.id.divider);
 
-
         display = mishes.elementAt(position);
 
         //assign values
-        title.setText(display.getTitle());
-        due.setText("Due on: " + MuckWrite.date(display.getTimeToCompleteBy()));
-        body.setText(display.getBody());
-        created.setText("Created: " + MuckWrite.date(display.getTimeCreated()));
-        countDown.setText("Due:" + MuckWrite.date(display.getTimeToCompleteBy()));
 
+        //determine visibility
+        if (display.getTitle().equals("")) {
+
+            title.setVisibility(View.INVISIBLE);
+            title.setHeight(0);
+        } else {
+
+            title.setText(display.getTitle());
+        }
+
+
+        //determine visibility
+        if (!display.getHasDate()) {
+
+            due.setVisibility(View.INVISIBLE);
+            due.setHeight(0);
+
+            countDown.setVisibility(View.INVISIBLE);
+            due.setHeight(0);
+        } else {
+
+            due.setText("Due on " + MuckWrite.date(display.getTimeToCompleteBy()));
+            countDown.setText("Due in " + MuckWrite.countDown(display.getTimeToCompleteBy()));
+        }
+
+
+        //determine visibility
+        if (display.getBody().equals("")) {
+
+            body.setVisibility(View.INVISIBLE);
+            body.setHeight(0);
+
+            divider.setVisibility(View.INVISIBLE);
+        } else {
+
+            body.setText(display.getBody());
+        }
+
+
+
+        //background
+        if (display.getIsComplete()) {
+
+            constraintLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.muck_complete));
+        } else if (display.getTimeToCompleteBy().compareTo(Calendar.getInstance()) < 0
+                && display.getHasDate()) {
+
+            constraintLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.muck_late));
+        }
+
+        //always available
+        created.setText("Created " + MuckWrite.date(display.getTimeCreated()));
+
+        //listeners
+        constraintLayout.setOnClickListener(new DoubleClickListener(){
+
+            @Override
+            public void onDoubleClick() {
+
+                //constraintLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.muck_late));
+                MuckError.quickDebug(activity, "FUCK");
+
+            }
+
+        });
 
         return rowView;
     }
+
+
+
+    //todo better colour imp with more detail
+   /* void setBackground(char c){
+
+        if(c == "r")
+            setBackgroundRed();
+        if(c == "b")
+            setBackgroundBlue();
+        if(c == )
+
+    }
+
+    private void setBackgroundRed(){
+
+
+    }*/
+
 }

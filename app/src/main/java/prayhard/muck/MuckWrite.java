@@ -1,11 +1,14 @@
 package prayhard.muck;
 
+import android.support.annotation.NonNull;
+
 import java.util.Calendar;
 
 public class MuckWrite {
 
     //public static char
 
+    @NonNull
     public static String day(Calendar DayToWrite) {
 
         //var
@@ -80,6 +83,7 @@ public class MuckWrite {
 
     }
 
+    @NonNull
     public static String time(Calendar DayToWrite) {
 
         //var
@@ -154,11 +158,23 @@ public class MuckWrite {
     public static String countDown(Calendar toWrite){
 
         //obj
-
+        Calendar currentTime;
 
         //var
         String out;
-return "MEH";
+        Long difference;
+
+
+        //assign
+        currentTime = Calendar.getInstance();
+
+        difference = toWrite.getTimeInMillis() - currentTime.getTimeInMillis();
+
+
+        //complex way to get in
+
+
+        return "A hot Minute";
 
 
     }

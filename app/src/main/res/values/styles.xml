@@ -6,7 +6,24 @@
         <item name="colorPrimary">@color/ColorPrimary</item>
         <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
         <item name="colorAccent">@color/ColorAccent</item>
-        <item name="panelBackground">@color/ColorBackground</item>
+        <item name="panelBackground">@color/ColorMidBackground</item>
+        <item name="android:actionMenuTextColor">@color/ColorBackground</item>
+        <item name="android:actionButtonStyle">@style/myActionButtonStyle</item>
+        <item name="actionButtonStyle">@style/myActionButtonStyle</item>
+    </style>
+
+    <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:minWidth">43dp</item>
+        <item name="android:maxWidth">43dp</item>
+        <item name="android:width">43dp</item>
+    </style>
+
+    <style name="createTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/ColorAccent</item>
+        <item name="colorPrimaryDark">@color/ColorAccentDark</item>
+        <item name="colorAccent">@color/ColorAccent</item>
+        <item name="panelBackground">@color/ColorAccentBack</item>
         <item name="android:actionMenuTextColor">@color/ColorBackground</item>
     </style>
 

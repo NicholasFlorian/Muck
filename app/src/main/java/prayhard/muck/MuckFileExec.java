@@ -140,19 +140,24 @@ public class MuckFileExec {
         //var
         String[] Packets;
         int Count;
+        int parse;
 
 
         //initialize
-        ToBuild = Calendar.getInstance();
-
+        ToBuild = Mish.getEmptyCalendar();
+        //MuckError.quickDebug(a, "BUI-"+BuildFrom);
 
         //parse lines
-        Packets = BuildFrom.split(DELIM);
+        Packets = BuildFrom.split("[" + DELIM + "]");
         Count = 0;
         for(String Packet : Packets){
 
+            //MuckError.quickDebug(a, "CAL-"+Packet);
+
             //soften input
             if(Packet != null && Packet.length() >= 1){
+
+                if(Packet)
 
                 //determine type and handle it
                 switch(Count++){
@@ -165,8 +170,7 @@ public class MuckFileExec {
 
                     //month
                     case 1:
-
-                        ToBuild.set(Calendar.MONTH, Integer.parseInt(Packet));
+                            ToBuild.set(Calendar.MONTH, Integer.parseInt(Packet));
                         break;
 
                     //day
@@ -198,14 +202,14 @@ public class MuckFileExec {
 
         if(BuildFrom.equalsIgnoreCase("true"))
             return true;
-        else
-            return false;
+
+        return false;
     }
 
     private static String wordFromString(String BuildFrom){
 
-        //remove regrex
-        BuildFrom.replaceAll("[\"]", "");
+        //remove via regex
+        BuildFrom = BuildFrom.replaceAll("[\"]", "");
 
         return BuildFrom;
 
@@ -227,9 +231,9 @@ public class MuckFileExec {
         Out = Out.concat(START + STR +  ToWrite.getCreatorID() +    STR + END);
         Out = Out.concat(START + STR +  ToWrite.getTitle() +        STR + END);
         Out = Out.concat(START + STR +  ToWrite.getBody() +         STR + END);
-        Out = Out.concat(START +        ToWrite.getHasDate() +      STR + END);
-        Out = Out.concat(START +        ToWrite.getIsReminder() +   STR + END);
-        Out = Out.concat(START +        ToWrite.getIsComplete() +   STR + END);
+        Out = Out.concat(START +        ToWrite.getHasDate()            + END);
+        Out = Out.concat(START +        ToWrite.getIsReminder()         + END);
+        Out = Out.concat(START +        ToWrite.getIsComplete()         + END);
         Out = Out.concat(TAIL);
 
 

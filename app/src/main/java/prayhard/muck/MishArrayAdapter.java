@@ -20,8 +20,10 @@ import java.util.Vector;
 
 public class MishArrayAdapter<T> extends ArrayAdapter {
 
+    //A little sloppy, but KISS
     private final ContextWrapper activity;
     private final Vector<Mish> mishes;
+
 
     public MishArrayAdapter(ContextWrapper activity, Vector<Mish> mishes, List<String> ids){
         super(activity, -1, ids);
@@ -32,7 +34,7 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
 
     }
 
-    @NonNull
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -46,7 +48,6 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         TextView due;
         TextView body;
         TextView created;
-        TextView countDown;
         View divider;
 
         //obj
@@ -62,7 +63,6 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         due         = rowView.findViewById(R.id.textViewDue);
         body        = rowView.findViewById(R.id.textViewBody);
         created     = rowView.findViewById(R.id.textViewCreated);
-        countDown   = rowView.findViewById(R.id.textViewCountDown);
         divider     = rowView.findViewById(R.id.divider);
 
         display = mishes.elementAt(position);
@@ -86,12 +86,10 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
             due.setVisibility(View.INVISIBLE);
             due.setHeight(0);
 
-            countDown.setVisibility(View.INVISIBLE);
-            due.setHeight(0);
-        } else {
+        }
+        else {
 
-            due.setText("Due on " + MuckWrite.date(display.getTimeToCompleteBy()));
-            countDown.setText("Due in " + MuckWrite.countDown(display.getTimeToCompleteBy()));
+            due.setText("Due in " + MuckWrite.countDown(display.getTimeToCompleteBy())+ " (" + MuckWrite.date(display.getTimeToCompleteBy()) + ")");
         }
 
 
@@ -102,7 +100,8 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
             body.setHeight(0);
 
             divider.setVisibility(View.INVISIBLE);
-        } else {
+        }
+        else {
 
             body.setText(display.getBody());
         }
@@ -113,7 +112,8 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         if (display.getIsComplete()) {
 
             constraintLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.muck_complete));
-        } else if (display.getTimeToCompleteBy().compareTo(Calendar.getInstance()) < 0
+        }
+        else if (display.getTimeToCompleteBy().compareTo(Calendar.getInstance()) < 0
                 && display.getHasDate()) {
 
             constraintLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.muck_late));

@@ -17,4 +17,11 @@
         android:title="Delete"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_debug"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_bug"
+        android:title="Delete"
+        app:showAsAction="always" />
+
 </menu>

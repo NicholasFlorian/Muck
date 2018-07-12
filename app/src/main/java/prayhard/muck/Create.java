@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -22,9 +23,9 @@ public class Create extends AppCompatActivity {
     //class variables
 
     //This object being "Global" to the class allows for dynamic changing
-    private Calendar DateToCompleteBy;      //Store day and time
-    private boolean DateStatus;             //Store state of notification
-    private boolean NotificationStatus;     //Store state of notification
+    private Calendar dateToCompleteBy;      //Store day and time
+    private boolean dateStatus;             //Store state of notification
+    private boolean notificationStatus;     //Store state of notification
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,40 +33,40 @@ public class Create extends AppCompatActivity {
         setContentView(R.layout.activity_create);
 
         //widgets
-        Switch HasDate;
-        Switch SetReminder;
-        ConstraintLayout LayoutDay;
-        ConstraintLayout LayoutTime;
-        Button ButtonFin;
+        Switch hasDate;
+        Switch setReminder;
+        ConstraintLayout layoutDay;
+        ConstraintLayout layoutTime;
+        Button buttonFin;
 
 
         //initialize
-        DateToCompleteBy = Calendar.getInstance(); // set to current day and time as default
-        DateStatus = false;
-        NotificationStatus = false;
+        dateToCompleteBy = Calendar.getInstance(); // set to current day and time as default
+        dateStatus = false;
+        notificationStatus = false;
 
 
         //assign
-        updateDay(  DateToCompleteBy.get(Calendar.YEAR), DateToCompleteBy.get(Calendar.MONTH), DateToCompleteBy.get(Calendar.DAY_OF_MONTH));
-        updateTime( DateToCompleteBy.get(Calendar.HOUR_OF_DAY), DateToCompleteBy.get(Calendar.MINUTE));
+        updateDay(  dateToCompleteBy.get(Calendar.YEAR), dateToCompleteBy.get(Calendar.MONTH), dateToCompleteBy.get(Calendar.DAY_OF_MONTH));
+        updateTime( dateToCompleteBy.get(Calendar.HOUR_OF_DAY), dateToCompleteBy.get(Calendar.MINUTE));
         setVisibility(false);
 
-        HasDate         = findViewById(R.id.switchHasDate);
-        SetReminder     = findViewById(R.id.switchSetReminder);
-        LayoutDay       = findViewById(R.id.LayoutDay);
-        LayoutTime      = findViewById(R.id.LayoutTime);
-        ButtonFin       = findViewById(R.id.buttonFin);
+        hasDate         = findViewById(R.id.switchHasDate);
+        setReminder     = findViewById(R.id.switchSetReminder);
+        layoutDay       = findViewById(R.id.LayoutDay);
+        layoutTime      = findViewById(R.id.LayoutTime);
+        buttonFin       = findViewById(R.id.buttonFin);
 
 
         //listener for done button
-        ButtonFin.setOnClickListener(new View.OnClickListener() {
+        buttonFin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 buildAndSaveMish();
             }
         });
 
         //day listener
-        LayoutDay.setOnClickListener(new View.OnClickListener() {
+        layoutDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createDaySelector();
@@ -73,7 +74,7 @@ public class Create extends AppCompatActivity {
         });
 
         //time Listener
-        LayoutTime.setOnClickListener(new View.OnClickListener() {
+        layoutTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createTimeSelector();
@@ -81,19 +82,19 @@ public class Create extends AppCompatActivity {
         });
 
         //has date listener
-        HasDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        hasDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setVisibility(isChecked);
-                DateStatus = isChecked;
+                dateStatus = isChecked;
             }
         });
 
         //is notification listener
-        SetReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        setReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                NotificationStatus = isChecked;
+                notificationStatus = isChecked;
             }
         });
 
@@ -102,17 +103,17 @@ public class Create extends AppCompatActivity {
     private void setVisibility(boolean IsSet){
 
         //widgets
-        Switch SetReminder;
-        ConstraintLayout LayoutDay;
-        ConstraintLayout LayoutTime;
+        Switch setReminder;
+        ConstraintLayout layoutDay;
+        ConstraintLayout layoutTime;
 
         //var
         int VisStatus;
 
         //assign
-        SetReminder      = findViewById(R.id.switchSetReminder);
-        LayoutDay       = findViewById(R.id.LayoutDay);
-        LayoutTime      = findViewById(R.id.LayoutTime);
+        setReminder      = findViewById(R.id.switchSetReminder);
+        layoutDay       = findViewById(R.id.LayoutDay);
+        layoutTime      = findViewById(R.id.LayoutTime);
 
         if(IsSet)
             VisStatus = View.VISIBLE;
@@ -120,9 +121,9 @@ public class Create extends AppCompatActivity {
             VisStatus = View.GONE;
 
         //make visible/invisible
-        SetReminder.setVisibility(VisStatus);
-        LayoutDay.setVisibility(VisStatus);
-        LayoutTime.setVisibility(VisStatus);
+        setReminder.setVisibility(VisStatus);
+        layoutDay.setVisibility(VisStatus);
+        layoutTime.setVisibility(VisStatus);
 
     }
 
@@ -135,11 +136,11 @@ public class Create extends AppCompatActivity {
         TextViewDay = findViewById(R.id.TextViewDay);
 
         //set the date
-        DateToCompleteBy.set(Calendar.YEAR, Year);
-        DateToCompleteBy.set(Calendar.MONTH, Month);
-        DateToCompleteBy.set(Calendar.DAY_OF_MONTH, Day);
+        dateToCompleteBy.set(Calendar.YEAR, Year);
+        dateToCompleteBy.set(Calendar.MONTH, Month);
+        dateToCompleteBy.set(Calendar.DAY_OF_MONTH, Day);
 
-        TextViewDay.setText(MuckWrite.day(DateToCompleteBy));   //update the text field
+        TextViewDay.setText(MuckWrite.day(dateToCompleteBy));   //update the text field
     }
 
     private void updateTime(int Hour, int Minute){
@@ -153,20 +154,18 @@ public class Create extends AppCompatActivity {
         TextViewTime = findViewById(R.id.TextViewTime);
 
         //set the time
-        DateToCompleteBy.set(Calendar.HOUR_OF_DAY, Hour);
-        DateToCompleteBy.set(Calendar.MINUTE, Minute);
+        dateToCompleteBy.set(Calendar.HOUR_OF_DAY, Hour);
+        dateToCompleteBy.set(Calendar.MINUTE, Minute);
 
         //determine Meridiem
-        if(DateToCompleteBy.get(Calendar.HOUR_OF_DAY) > 12)
+        if(dateToCompleteBy.get(Calendar.HOUR_OF_DAY) > 12)
             Meridiem = 1;
         else
             Meridiem = 0;
 
-        DateToCompleteBy.set(Calendar.AM_PM, Meridiem);
+        dateToCompleteBy.set(Calendar.AM_PM, Meridiem);
 
-        TextViewTime.setText(MuckWrite.time(DateToCompleteBy));   //update the text field
-
-
+        TextViewTime.setText(MuckWrite.time(dateToCompleteBy));   //update the text field
     }
 
     private void createDaySelector(){
@@ -184,9 +183,9 @@ public class Create extends AppCompatActivity {
         new DatePickerDialog(
                 this,
                 OnDateSet,
-                DateToCompleteBy.get(Calendar.YEAR),
-                DateToCompleteBy.get(Calendar.MONTH),
-                DateToCompleteBy.get(Calendar.DAY_OF_MONTH)).show();
+                dateToCompleteBy.get(Calendar.YEAR),
+                dateToCompleteBy.get(Calendar.MONTH),
+                dateToCompleteBy.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void createTimeSelector(){
@@ -203,78 +202,105 @@ public class Create extends AppCompatActivity {
         new TimePickerDialog(
                 this,
                 OnTimeSet,
-                DateToCompleteBy.get(Calendar.HOUR_OF_DAY),
-                DateToCompleteBy.get(Calendar.MINUTE),
+                dateToCompleteBy.get(Calendar.HOUR_OF_DAY),
+                dateToCompleteBy.get(Calendar.MINUTE),
                 false).show();
     }
 
     private void buildAndSaveMish(){
 
         //obj
-        Mish MishToWrite;
+        Mish mishToWrite;
 
+        //var
+        boolean flag;
+
+        //initialize
+        mishToWrite = new Mish();
 
         //assign
-        MishToWrite = createMishViaForm();
+        try {
+            flag = true;
+            mishToWrite = createMishViaForm();
+        }
+        catch(FormException f){
+
+            flag = false;
+            Toast.makeText(this, f.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
 
         //write file to database
-        MuckFileExec.writeToDataBase(this, MishToWrite);
+        if (flag) {
 
-        //end Activity
-        finish();
+            MuckFileExec.writeToDataBase(this, mishToWrite);
+
+            //end Activity
+            finish();
+        }
     }
 
-    private Mish createMishViaForm(){
+    private Mish createMishViaForm() throws FormException{
 
         //widget
-        EditText EditTextTitle;
-        EditText EditTextBody;
+        EditText editTextTitle;
+        EditText editTextBody;
 
         //obj
         Mish MishToBuild = new Mish();
-        Calendar TimeToCompleteBy;
+        Calendar timeToCompleteBy;
 
         //var
-        boolean HasDate;
-        boolean IsReminder;
-        String CreatorID;
-        String Title;
-        String Body;
+        boolean hasDate;
+        boolean isReminder;
+        String creatorID;
+        String title;
+        String body;
 
 
         //assign
-        EditTextTitle   = findViewById(R.id.editTextTitle);
-        EditTextBody    = findViewById(R.id.editTextBody);
+        editTextTitle   = findViewById(R.id.editTextTitle);
+        editTextBody    = findViewById(R.id.editTextBody);
 
 
         //create mish
 
         //use global status instead of direct for GIGO
-        HasDate     = DateStatus;
-        IsReminder  = NotificationStatus;
+        hasDate     = dateStatus;
+        isReminder  = notificationStatus;
 
         //control other fields if closed
-        if(HasDate){
+        if(hasDate){
 
-            TimeToCompleteBy = DateToCompleteBy;
+            timeToCompleteBy = dateToCompleteBy;
         }
         else{
 
             //no date
-            IsReminder = false;
-            TimeToCompleteBy = Mish.getEmptyCalendar();
+            isReminder = false;
+            timeToCompleteBy = Mish.getEmptyCalendar();
         }
 
         //Todo this in preferences later
-        CreatorID = "Nick";
+        creatorID = "Nick";
 
         //assign strings
-        Title   = EditTextTitle.getText().toString();
-        Body    = EditTextBody.getText().toString();
+        title   = editTextTitle.getText().toString();
+        body    = editTextBody.getText().toString();
+
+
+        //verify information
+        if(title.equals("") && body.equals(""))
+            throw new FormException();
+        else if(title.equals("")){
+
+            title = body;
+            body = "";
+        }
 
 
         //return new mish based on data
-        MishToBuild  = new Mish(TimeToCompleteBy, CreatorID, Title, Body, HasDate, IsReminder);
+        MishToBuild = new Mish(timeToCompleteBy, creatorID, title, body, hasDate, isReminder);
 
         return MishToBuild;
     }

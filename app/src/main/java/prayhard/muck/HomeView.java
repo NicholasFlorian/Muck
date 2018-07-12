@@ -57,8 +57,6 @@ public class HomeView extends AppCompatActivity {
     public void onResume(){
         super.onResume();
 
-        //on resuming the application
-        //setText();
         setList();
     }
 
@@ -103,10 +101,14 @@ public class HomeView extends AppCompatActivity {
             //build the dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            builder.setMessage("Delete all Mishes,\nare you sure?");
-            builder.setPositiveButton("Yas", dialogClickListener);
-            builder.setNegativeButton("Nah", dialogClickListener).show();
+            builder.setMessage("Delete all Mishes, are you sure?");
+            builder.setPositiveButton("Yes", dialogClickListener);
+            builder.setNegativeButton("No", dialogClickListener).show();
 
+        }
+        else if(id == R.id.action_debug){
+
+            startActivity(new Intent(this, debugView.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -135,9 +137,8 @@ public class HomeView extends AppCompatActivity {
 
 
         //assign
-        Mishes = MuckFileExec.createVectorMish(
-                this,
-                MuckFileExec.read(this));
+        Mishes = MuckFileExec.parseMishes(
+               this, MuckFileExec.read(this));
 
         for(int i = 0; i < Mishes.size(); i++)
             ids.add(Mishes.get(i).getUniversalID());
@@ -158,6 +159,7 @@ public class HomeView extends AppCompatActivity {
     private void deleteAll(){
 
         MuckFileExec.delete(this);
+        MuckFileExec.createDataBase(this);
         this.setList();
     }
 

@@ -25,6 +25,9 @@
         android:layout_margin="0dp"
         android:divider="@null"
         android:dividerHeight="0dp"
+        android:elevation="0dp"
+        android:fadingEdge="horizontal"
+        android:paddingTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

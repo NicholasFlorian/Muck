@@ -9,119 +9,119 @@ public class MuckWrite {
     //public static char
 
     @NonNull
-    public static String day(Calendar DayToWrite) {
+    public static String day(Calendar dayToWrite) {
 
         //var
-        String Month;
-        int Day;
-        int Year;
+        String month;
+        int day;
+        int year;
 
 
         //assign
-        switch (DayToWrite.get(Calendar.MONTH)) {
+        switch (dayToWrite.get(Calendar.MONTH)) {
 
             default:
-                Month = "";
+                month = "";
                 break;
 
             case 0:
-                Month = "January";
+                month = "January";
                 break;
 
             case 1:
-                Month = "February";
+                month = "February";
                 break;
 
             case 2:
-                Month = "March";
+                month = "March";
                 break;
 
             case 3:
-                Month = "April";
+                month = "April";
                 break;
 
             case 4:
-                Month = "May";
+                month = "May";
                 break;
 
             case 5:
-                Month = "June";
+                month = "June";
                 break;
 
             case 6:
-                Month = "July";
+                month = "July";
                 break;
 
             case 7:
-                Month = "August";
+                month = "August";
                 break;
 
             case 8:
-                Month = "September";
+                month = "September";
                 break;
 
             case 9:
-                Month = "October";
+                month = "October";
                 break;
 
             case 10:
-                Month = "November";
+                month = "November";
                 break;
 
             case 11:
-                Month = "December";
+                month = "December";
                 break;
         }
 
         //get date and year directly
-        Day = DayToWrite.get(Calendar.DAY_OF_MONTH);
-        Year = DayToWrite.get(Calendar.YEAR);
+        day = dayToWrite.get(Calendar.DAY_OF_MONTH);
+        year = dayToWrite.get(Calendar.YEAR);
 
 
         //return
-        return (Month + " " + Day + ", " + Year).trim();
+        return (month + " " + day + ", " + year).trim();
 
     }
 
     @NonNull
-    public static String time(Calendar DayToWrite) {
+    public static String time(Calendar dayToWrite) {
 
         //var
-        String Meridiem;
-        String MinuteFormat;
-        int Hour;
-        int Minute;
+        String meridiem;
+        String minuteFormat;
+        int hour;
+        int minute;
 
 
         //get date and year directly
-        Hour = DayToWrite.get(Calendar.HOUR);
-        Minute = DayToWrite.get(Calendar.MINUTE);
+        hour = dayToWrite.get(Calendar.HOUR);
+        minute = dayToWrite.get(Calendar.MINUTE);
 
         //calculate AM or Pm
-        switch (DayToWrite.get(Calendar.AM_PM)) {
+        switch (dayToWrite.get(Calendar.AM_PM)) {
 
             default:
-                Meridiem = "";
+                meridiem = "";
                 break;
 
             case 0:
-                Meridiem = "AM";
+                meridiem = "AM";
                 break;
 
             case 1:
-                Meridiem = "PM";
+                meridiem = "PM";
                 break;
 
         }
 
         //format for small minute numbers
-        if (Minute < 10)
-            MinuteFormat = "0";
+        if (minute < 10)
+            minuteFormat = "0";
         else
-            MinuteFormat = "";
+            minuteFormat = "";
 
         //return
-        return (Hour + ":" + MinuteFormat + Minute + " " + Meridiem).trim();
+        return (hour + ":" + minuteFormat + minute + " " + meridiem).trim();
 
     }
 

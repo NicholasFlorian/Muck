@@ -6,21 +6,21 @@ import android.widget.Toast;
 
 public class MuckError {
 
-    protected static void quickDebug(ContextWrapper Activity, String Message){
+    protected static void quickDebug(ContextWrapper activity, String message){
 
         //prompt for debugging
-        Toast.makeText(Activity, "DD:\n" + Message, Toast.LENGTH_LONG).show();
-        System.out.println("DD: " + Message);
+        Toast.makeText(activity, "DD:\n" + message, Toast.LENGTH_LONG).show();
+        System.out.println("DD: " + message);
     }
 
-    protected static void display(ContextWrapper Activity, String Tag, String Message){
+    protected static void display(ContextWrapper activity, String tag, String message){
 
         //log the error
-        Log.e(Tag, Message);
+        Log.e(tag, message);
 
         //prompt for debugging
-        Toast.makeText(Activity, Tag + "-" + Message, Toast.LENGTH_LONG).show();
-        System.out.println(Tag + "-" + Message);
+        Toast.makeText(activity, tag + "-" + message, Toast.LENGTH_LONG).show();
+        System.out.println(tag + "-" + message);
     }
 
 }

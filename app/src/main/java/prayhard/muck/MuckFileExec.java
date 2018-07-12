@@ -13,300 +13,452 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Vector;
+import java.util.regex.*;
 
 public class MuckFileExec {
 
+    //PARSING SPEC
+
     //special characters
-    static protected String TAIL    = "&";
-    static protected String DATA    = "*";
-    static protected String HEAD    = "#";
-    static protected String START   = "$";
-    static protected String END     = ">";
-    static protected String DELIM   = ".";
-    static protected String STR     = "\"";
+    static protected final char P_DATA  = '*';
+    static protected final char P_HEAD	= '(';
+    static protected final char P_TAIL  = ')';
+    static protected final char D_HEAD 	= '<';
+    static protected final char D_TAIL  = '>';
+    static protected final char DELIM	= '.'; //for NUM
+    static protected final char STR   	= '\"';
+    static protected final char NEW     = '\n';
+
+
+    //regex string paterns
+    static protected final String _VERIFY_FILE 	= "([" + P_DATA + "|" + P_HEAD + "]([" + D_HEAD + "][" + STR + "][^" + STR + "]*?[" + STR + "][" + D_TAIL + "]|[^" + P_DATA + P_TAIL + P_HEAD + "])+[" + P_TAIL + "])+";
+    static protected final String _P_SPLIT 		=  "[" + P_DATA + "|" + P_HEAD + "]([" + D_HEAD + "][" + STR + "][^" + STR + "]*?[" + STR + "][" + D_TAIL + "]|[^" + P_HEAD + P_DATA + P_TAIL + "])+[" + P_TAIL + "]";
+
+    static protected final String _D_SPLIT		= "[" + D_HEAD + "]([" + D_HEAD + "][" + STR +"][^" + STR +"]*?[" + STR + "][" + D_TAIL+ "]|[^" + D_TAIL + "])+[" + D_TAIL + "]";
+
+    static protected final String _ID			= "[^" + D_HEAD + D_TAIL + "]+";
+    static protected final String _STRING 		= "[" + STR + "][^" + STR + "]*?[" + STR +"]";
+    static protected final String _BOOLEAN		= "(true|false)";
+    static protected final String _NUM			= "([\\d]+)";
+
 
     //file data
     static private String EXEC_PATH = "exec.db";
     static private String FORMAT    = "UTF-8";
 
     //pre made headers
-    private static String HEADER    = DATA + "MUCK_EXEC_FILE" + START + END + TAIL;
-    private static String CREATED   = DATA + "CREATED_DATA_BASE" + START;
+    private static String HEADER    = P_DATA + "MUCK_EXEC_FILE" + D_HEAD + D_TAIL+ P_TAIL + NEW;
+    private static String CREATED   = P_DATA + "CREATED_DATA_BASE" + D_HEAD;
 
 
-    private static Mish mishFromString(ContextWrapper Activity, String BuildFrom){
+    //regex patterns
+    private static final Pattern VERIFY_FILE;
+    private static final Pattern PACKET_SPLIT;
+    private static final Pattern DATA_SPLIT;
+    private static final Pattern ID;
+    private static final Pattern STRING;
+    private static final Pattern BOOLEAN;
+    private static final Pattern NUM;
+
+
+    static {
+
+        //build patterns at start of program
+        VERIFY_FILE 	= Pattern.compile(_VERIFY_FILE);
+        PACKET_SPLIT 	= Pattern.compile(_P_SPLIT);
+        DATA_SPLIT		= Pattern.compile(_D_SPLIT);
+
+        ID				= Pattern.compile(_ID);
+        STRING 			= Pattern.compile(_STRING);
+        BOOLEAN			= Pattern.compile(_BOOLEAN);
+        NUM				= Pattern.compile(_NUM);
+
+    }
+
+    //MISH BUILDING
+    public static Vector<Mish> parseMishes(ContextWrapper activity, String data){
 
         //obj
-        Mish ToBuild;
+        Vector<Mish> mishes;
+        Matcher matcher;
 
         //var
-        String[] Packets;
-        int Count;
+        char Flag;
 
 
         //initialize
-        ToBuild = new Mish();
+        mishes = new Vector<>();
+
+        //assign
+        matcher = PACKET_SPLIT.matcher(data);
 
 
-        //parse lines
-        Packets = BuildFrom.split("[" + HEAD + END + START + TAIL + "]");
-        Count = 0;
-        for(String Packet : Packets){
+        //parse line
+        while(matcher.find()){
+
+            //obj
+            String packet = matcher.group();
 
             //soften input
-            if(Packet != null && Packet.length() >= 1){
+            if(packet.length() >= 1){
 
                 //determine type and handle it
-                switch(Count++){
+                Flag = packet.charAt(0);
+                switch(Flag){
 
-                    //universalId
-                    case 0:
-
-                        ToBuild.setUniversalID(wordFromString(Packet));
+                    default:
+                        //handle errors
                         break;
 
-                    //timeCreated
-                    case 1:
-
-                        ToBuild.setTimeCreated(calendarFromString(Packet));
+                    case P_DATA:
+                        //handle meta data
                         break;
 
-                    //timeLastEdited
-                    case 2:
-
-                        //no need to update
-                        break;
-
-                    //timeToCompleteBy
-                    case 3:
-
-                        ToBuild.setTimeToCompleteBy((calendarFromString(Packet)));
-                        break;
-
-                    //timeCompletedBy
-                    case 4:
-
-                        ToBuild.setTimeCompletedOn(calendarFromString(Packet));
-                        break;
-
-                    //createrID
-                    case 5:
-
-                        ToBuild.setCreatorID(wordFromString(Packet));
-                        break;
-
-                    //title
-                    case 6:
-
-                        ToBuild.setTitle(wordFromString(Packet));
-                        break;
-
-                    //body
-                    case 7:
-
-                        ToBuild.setBody(wordFromString(Packet));
-                        break;
-
-                    //hasDate
-                    case 8:
-
-                        ToBuild.setHasDate(booleanFromString(Packet));
-                        break;
-
-                    //isReminder
-                    case 9:
-
-                        ToBuild.setIsReminder(booleanFromString(Packet));
-                        break;
-
-                    //isComplete
-                    case 10:
-
-                        ToBuild.setIsComplete(booleanFromString(Packet));
+                    case P_HEAD:
+                        mishes.add(parseMish(packet));
                         break;
                 }
             }
         }
 
-        //return
-        return ToBuild;
+        //return vector
+        return mishes;
+
     }
 
-    private static Calendar calendarFromString(String BuildFrom){
+    private static Mish parseMish(String data) {
 
         //obj
-        Calendar ToBuild;
+        Mish toBuild;
+        Matcher matcher;
 
         //var
-        String[] Packets;
-        int Count;
-        int parse;
+        int count;
 
 
         //initialize
-        ToBuild = Mish.getEmptyCalendar();
-        //MuckError.quickDebug(a, "BUI-"+BuildFrom);
+        toBuild = new Mish();
 
-        //parse lines
-        Packets = BuildFrom.split("[" + DELIM + "]");
-        Count = 0;
-        for(String Packet : Packets){
+        //assign
+        matcher = DATA_SPLIT.matcher(data);
 
-            //MuckError.quickDebug(a, "CAL-"+Packet);
+
+        //parse line
+        count = 0;
+        while(matcher.find()){
+
+            //obj
+            String packet = matcher.group();
+
+            switch(count++){
+
+                //universalId
+                case 0:
+
+                    toBuild.setUniversalID(parseId(packet));
+                    break;
+
+                //timeCreated
+                case 1:
+
+                    toBuild.setTimeCreated(parseCalendar(packet));
+                    break;
+
+                //timeLastEdited
+                case 2:
+
+                    //no need to update
+                    break;
+
+                //timeToCompleteBy
+                case 3:
+
+                    toBuild.setTimeToCompleteBy(parseCalendar(packet));
+                    break;
+
+                //timeCompletedBy
+                case 4:
+
+                    toBuild.setTimeCompletedOn(parseCalendar(packet));
+                    break;
+
+                //createrID
+                case 5:
+
+                    toBuild.setCreatorID(parseString(packet));
+                    break;
+
+                //title
+                case 6:
+
+                    toBuild.setTitle(parseString(packet));
+                    break;
+
+                //body
+                case 7:
+
+                    toBuild.setBody(parseString(packet));
+                    break;
+
+                //hasDate
+                case 8:
+
+                    toBuild.setHasDate(parseBoolean(packet));
+                    break;
+
+                //isReminder
+                case 9:
+
+                    toBuild.setIsReminder(parseBoolean(packet));
+                    break;
+
+                //isComplete
+                case 10:
+
+                    toBuild.setIsComplete(parseBoolean(packet));
+                    break;
+
+
+            }
+
+        }
+
+        //return vector
+        return toBuild;
+    }
+
+    private static String parseId(String data) {
+
+        //obj
+        Matcher matcher;
+
+
+        //assign
+        matcher = ID.matcher(data);
+
+        if(matcher.find())
+            return matcher.group();
+        else
+            return "";
+    }
+
+    private static String parseString(String data) {
+
+        //obj
+        Matcher matcher;
+
+
+        //assign
+        matcher = STRING.matcher(data);
+
+        if(matcher.find())
+            return matcher.group().replaceAll(STR + "", "");
+        else
+            return "";
+
+    }
+
+    private static boolean parseBoolean(String data) {
+
+        //obj
+        Matcher matcher;
+        String temp;
+
+        //assign
+        matcher = BOOLEAN.matcher(data);
+
+        if(matcher.find()) {
+
+            temp = matcher.group();
+
+            switch(temp) {
+
+                default:
+
+                case "false":
+                    return false;
+
+                case "true":
+                    return true;
+            }
+        }
+        else
+            return true;
+
+    }
+
+    private static Calendar parseCalendar(String data){
+
+        //obj
+        Calendar toBuild;
+        Matcher matcher;
+
+        //var
+        int count;
+        int parse;
+        boolean flag;
+
+        //assign
+        matcher = NUM.matcher(data);
+
+        toBuild = Mish.getEmptyCalendar();
+
+        //parse line
+        count = 0;
+        while(matcher.find()){
+
+            //obj
+            String packet = matcher.group();
 
             //soften input
-            if(Packet != null && Packet.length() >= 1){
+            try{
 
-                if(Packet)
+                parse = Integer.parseInt(packet);
+                flag = true;
+            }
+            catch(NumberFormatException e){
+
+                flag = false;
+                parse = 0;
+            }
+
+            //check data
+            if(packet != null && packet.length() >= 1 && flag){
 
                 //determine type and handle it
-                switch(Count++){
+                switch(count++){
 
                     //year
                     case 0:
 
-                        ToBuild.set(Calendar.YEAR, Integer.parseInt(Packet));
+                        toBuild.set(Calendar.YEAR, parse);
                         break;
 
                     //month
                     case 1:
-                            ToBuild.set(Calendar.MONTH, Integer.parseInt(Packet));
+                        toBuild.set(Calendar.MONTH, parse);
                         break;
 
                     //day
                     case 2:
 
-                        ToBuild.set(Calendar.DAY_OF_MONTH, Integer.parseInt(Packet));
+                        toBuild.set(Calendar.DAY_OF_MONTH, parse);
                         break;
 
                     //hour
                     case 3:
 
-                        ToBuild.set(Calendar.HOUR_OF_DAY, Integer.parseInt(Packet));
+                        toBuild.set(Calendar.HOUR_OF_DAY, parse);
                         break;
 
                     //minute
                     case 4:
-                        ToBuild.set(Calendar.MINUTE, Integer.parseInt(Packet));
+                        toBuild.set(Calendar.MINUTE, parse);
                         break;
                 }
             }
         }
 
         //return
-        return ToBuild;
+        return toBuild;
 
     }
 
-    private static boolean booleanFromString(String BuildFrom){
-
-        if(BuildFrom.equalsIgnoreCase("true"))
-            return true;
-
-        return false;
-    }
-
-    private static String wordFromString(String BuildFrom){
-
-        //remove via regex
-        BuildFrom = BuildFrom.replaceAll("[\"]", "");
-
-        return BuildFrom;
-
-    }
-
-    private static String writeMish(Mish ToWrite){
+    private static String writeMish(Mish toWrite){
 
         //var
         String Out;
 
 
         //assign
-        Out = "";
-        Out = Out.concat(HEAD + START + ToWrite.getUniversalID() +                          END);
-        Out = Out.concat(START +        MuckWrite.calendar(ToWrite.getTimeCreated()) +      END);
-        Out = Out.concat(START +        MuckWrite.calendar(ToWrite.getTimeLastEdited()) +   END);
-        Out = Out.concat(START +        MuckWrite.calendar(ToWrite.getTimeToCompleteBy()) + END);
-        Out = Out.concat(START +        MuckWrite.calendar(ToWrite.getTimeCompletedOn()) +  END);
-        Out = Out.concat(START + STR +  ToWrite.getCreatorID() +    STR + END);
-        Out = Out.concat(START + STR +  ToWrite.getTitle() +        STR + END);
-        Out = Out.concat(START + STR +  ToWrite.getBody() +         STR + END);
-        Out = Out.concat(START +        ToWrite.getHasDate()            + END);
-        Out = Out.concat(START +        ToWrite.getIsReminder()         + END);
-        Out = Out.concat(START +        ToWrite.getIsComplete()         + END);
-        Out = Out.concat(TAIL);
 
+        //Java is having a bitch fit where it adds the chars as ints first see ""
+        Out = "";
+        Out = Out.concat(P_HEAD + "" + D_HEAD + toWrite.getUniversalID() +                             D_TAIL);
+        Out = Out.concat(D_HEAD +               MuckWrite.calendar(toWrite.getTimeCreated()) +         D_TAIL);
+        Out = Out.concat(D_HEAD +               MuckWrite.calendar(toWrite.getTimeLastEdited()) +      D_TAIL);
+        Out = Out.concat(D_HEAD +               MuckWrite.calendar(toWrite.getTimeToCompleteBy()) +    D_TAIL);
+        Out = Out.concat(D_HEAD +               MuckWrite.calendar(toWrite.getTimeCompletedOn()) +     D_TAIL);
+        Out = Out.concat(D_HEAD + "" + STR +    toWrite.getCreatorID() +                               STR + D_TAIL);
+        Out = Out.concat(D_HEAD + "" + STR +    toWrite.getTitle() +                                   STR + D_TAIL);
+        Out = Out.concat(D_HEAD + "" + STR +    toWrite.getBody() +                                    STR + D_TAIL);
+        Out = Out.concat("" + D_HEAD +          toWrite.getHasDate() +                                 D_TAIL); //"" solves java's little bitch fit
+        Out = Out.concat("" + D_HEAD +          toWrite.getIsReminder() +                              D_TAIL);
+        Out = Out.concat("" + D_HEAD +          toWrite.getIsComplete() +                              D_TAIL);
+        Out = Out.concat(P_TAIL + "\n");
 
         return Out;
-
     }
 
-    private static void writeToDataBase(ContextWrapper Activity, String ToWrite) {
+
+    //DATABASE FUNCTIONS
+
+    private static void writeToDataBase(ContextWrapper activity, String toWrite) {
 
         //obj
-        FileOutputStream Stream;
-        File Exec;
+        FileOutputStream stream;
+        File exec;
 
         //link stream
         try {
 
             //build writer
-            Stream = Activity.openFileOutput(EXEC_PATH, Context.MODE_APPEND);
+            stream = activity.openFileOutput(EXEC_PATH, Context.MODE_APPEND);
 
             //write and flush buffer
-            Stream.write(ToWrite.getBytes());
-            Stream.flush();
-            Stream.close();
+            stream.write(toWrite.getBytes());
+            stream.flush();
+            stream.close();
         }
         catch (FileNotFoundException e) {
 
-            MuckError.display(Activity, "Exception", "File Not Found");
+            MuckError.display(activity, "Exception", "File Not Found");
         }
         catch (IOException e) {
 
-            MuckError.display(Activity, "Exception", "IO Issue");
+            MuckError.display(activity, "Exception", "IO Issue");
         }
     }
 
-    public static void writeToDataBase(ContextWrapper Activity, Mish MishToWrite) {
+    public static void writeToDataBase(ContextWrapper activity, Mish mishToWrite) {
 
-        writeToDataBase(Activity, writeMish(MishToWrite));
+        writeToDataBase(activity, writeMish(mishToWrite));
     }
 
-    public static void createDataBase(ContextWrapper Activity) {
+    public static void createDataBase(ContextWrapper activity) {
 
         //create the file
-        new File(Activity.getFilesDir(), EXEC_PATH);
+        new File(activity.getFilesDir(), EXEC_PATH);
 
         //print out header
-        writeToDataBase(Activity, HEADER + CREATED + MuckWrite.calendar(Calendar.getInstance()) + END + TAIL);
+        writeToDataBase(activity, HEADER + CREATED + MuckWrite.calendar(Calendar.getInstance()) + D_TAIL + P_TAIL + "\n");
     }
 
-    public static void delete(ContextWrapper Activity){
+    public static void delete(ContextWrapper activity){
 
         //var
-        File Exec = new File(Activity.getFilesDir(), EXEC_PATH);
+        File exec = new File(activity.getFilesDir(), EXEC_PATH);
 
 
         //delete data
         try {
 
-            PrintWriter writer = new PrintWriter(Exec);
+            PrintWriter writer = new PrintWriter(exec);
             writer.print("");
             writer.close();
         }
         catch(FileNotFoundException e){
 
-            MuckError.display(Activity, "Exception", "File Not Found");
+            MuckError.display(activity, "Exception", "File Not Found");
         }
 
     }
 
-    public static String read(ContextWrapper Activity) {
+    public static String read(ContextWrapper activity) {
 
         //obj
-        FileInputStream Exec;
-        BufferedReader ExecBufferedReader;
+        FileInputStream exec;
+        BufferedReader execBufferedReader;
         StringBuilder MishBuilder;
 
         //var
@@ -319,78 +471,25 @@ public class MuckFileExec {
         //read file
         try {
             //assign
-            Exec = Activity.openFileInput(EXEC_PATH);
-            ExecBufferedReader = new BufferedReader(new InputStreamReader(Exec, FORMAT));
+            exec = activity.openFileInput(EXEC_PATH);
+            execBufferedReader = new BufferedReader(new InputStreamReader(exec, FORMAT));
 
             //parse
-            while ((Line = ExecBufferedReader.readLine()) != null) {
+            while ((Line = execBufferedReader.readLine()) != null) {
 
                     MishBuilder.append(Line + "\n");
             }
         }
         catch (FileNotFoundException e) {
 
-            MuckError.display(Activity, "Exception", "File Not Found");
+            MuckError.display(activity, "Exception", "File Not Found");
         }
         catch (IOException e) {
 
-            MuckError.display(Activity, "Exception", "IO Issue");
+            MuckError.display(activity, "Exception", "IO Issue");
         }
 
         return MishBuilder.toString();
-    }
-
-    public static Vector<Mish> createVectorMish(ContextWrapper Activity, String BuildFrom){
-
-        //obj
-        Vector<Mish> Mishes;
-        String[] Packets;
-
-        //var
-        char Flag;
-        int Count;
-
-
-        //initialize
-        Mishes = new Vector<>();
-
-
-        //parse lines
-        Packets = BuildFrom.split(TAIL);
-        Count = 0;
-        for(String Packet : Packets){
-
-            //soften input
-            if(Packet != null && Packet.length() >= 1){
-
-                //determine type and handle it
-                Flag = Packet.charAt(0);
-                switch(Flag){
-
-                    default:
-                        //handle errors
-                        break;
-
-                    case '*':
-                        //handle meta data
-                        break;
-
-                    case '#':
-                        Mish temp = mishFromString(Activity, Packet);
-                        Mishes.add(temp);
-                        //MuckError.quickDebug(Activity, writeMish(temp));
-                        break;
-                }
-            }
-
-
-            Count++;
-        }
-
-
-        //return vector
-        return Mishes;
-
     }
 
 }

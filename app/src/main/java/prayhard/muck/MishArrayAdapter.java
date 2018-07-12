@@ -38,6 +38,8 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        //todo add bel logo
+
         //layout
         LayoutInflater inflater;
         View rowView;

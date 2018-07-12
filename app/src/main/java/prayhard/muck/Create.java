@@ -3,6 +3,9 @@ package prayhard.muck;
 import android.app.DatePickerDialog;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+
+//todo auto update late tags, hard swipe down to reload
 
 public class Create extends AppCompatActivity {
 
@@ -247,7 +252,7 @@ public class Create extends AppCompatActivity {
         EditText editTextBody;
 
         //obj
-        Mish MishToBuild = new Mish();
+        SharedPreferences settings;
         Calendar timeToCompleteBy;
 
         //var
@@ -262,6 +267,8 @@ public class Create extends AppCompatActivity {
         editTextTitle   = findViewById(R.id.editTextTitle);
         editTextBody    = findViewById(R.id.editTextBody);
 
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+                //getSharedPreferences("pref_main.xml", MODE_PRIVATE);
 
         //create mish
 
@@ -281,8 +288,8 @@ public class Create extends AppCompatActivity {
             timeToCompleteBy = Mish.getEmptyCalendar();
         }
 
-        //Todo this in preferences later
-        creatorID = "Nick";
+        //get id from user preference
+        creatorID = settings.getString("user_name", "/");
 
         //assign strings
         title   = editTextTitle.getText().toString();
@@ -300,9 +307,7 @@ public class Create extends AppCompatActivity {
 
 
         //return new mish based on data
-        MishToBuild = new Mish(timeToCompleteBy, creatorID, title, body, hasDate, isReminder);
-
-        return MishToBuild;
+        return new Mish(timeToCompleteBy, creatorID, title, body, hasDate, isReminder);
     }
 
 }

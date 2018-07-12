@@ -27,6 +27,15 @@
         <item name="android:actionMenuTextColor">@color/ColorBackground</item>
     </style>
 
+    <style name="settingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/ColorAccentY</item>
+        <item name="colorPrimaryDark">@color/ColorAccentYDark</item>
+        <item name="colorAccent">@color/ColorAccent</item>
+        <item name="panelBackground">@color/ColorAccentYBack</item>
+        <item name="android:actionMenuTextColor">@color/ColorBackground</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

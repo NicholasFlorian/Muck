@@ -9,28 +9,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MuckTheme">
+
+
         <activity
             android:name=".HomeView"
-            android:label="@string/app_name" />
+            android:label="@string/app_name">
+        </activity>
+
+
         <activity
             android:name=".SplashScreen"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".Create"
             android:label="Create a New Mish"
             android:parentActivityName=".HomeView"
             android:theme="@style/createTheme"
             android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".debugView" />
+
+
         <activity
             android:name=".Settings"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".debugView"></activity>
+            android:label="@string/title_activity_settings"
+            android:theme="@style/settingsTheme"
+            android:parentActivityName=".HomeView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="prayhard.muck.HomeView" />
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -40,7 +40,7 @@ public class SplashScreen extends AppCompatActivity {
                 .putBoolean("isFirstRun", false).apply();
 
         //delay and run homeview
-        splosh(1.5);
+        splosh(0.7);
 
     }
 

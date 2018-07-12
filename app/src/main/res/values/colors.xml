@@ -9,6 +9,7 @@
     <color name="ColorAccentXBack">#F6B9CA</color>
     <color name="ColorAccentY">#FFBF00</color>
     <color name="ColorAccentYBack">#FFE18B</color>
+    <color name="ColorAccentYDark">#E2AA00</color>
     <color name="ColorBackground">#FEFFFE</color>
     <color name="ColorMidBackground"> #CCE8DB </color>
     <color name="ColorDarkBackground">#7AC1A0</color>

@@ -112,33 +112,18 @@ public class Mish {
     private String generateUniversalID(){
 
         //var
-        String Out;
-        String Word;
+        String code;
+        int num;
 
+        code = "" +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.YEAR) - 2000) +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.MONTH)) +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.DAY_OF_MONTH)) +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.HOUR_OF_DAY)) +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.MINUTE)) +
+                MuckWrite.twoDig(TimeCreated.get(Calendar.SECOND));
 
-        //assign
-        if(Title.equals("") && !Body.equals(""))
-            Word = Body;
-        else if(Title.equals("") && Body.equals(""))
-            Word = "/";
-        else
-            Word = Title;
-
-        Out = "";
-        Out = Out.concat(CreatorID + "." + Word + ".");
-        Out = Out.concat(TimeCreated.get(Calendar.YEAR) + "");
-        Out = Out.concat(TimeCreated.get(Calendar.MONTH)+ "");
-        Out = Out.concat(TimeCreated.get(Calendar.DAY_OF_MONTH) +  "");
-        Out = Out.concat(TimeCreated.get(Calendar.HOUR_OF_DAY) + "");
-        Out = Out.concat(TimeCreated.get(Calendar.MINUTE) + "");
-        /*Out = Out.concat(TimeToCompleteBy.get(Calendar.YEAR) + ".");
-        Out = Out.concat(TimeToCompleteBy.get(Calendar.MONTH)+ ".");
-        Out = Out.concat(TimeToCompleteBy.get(Calendar.DAY_OF_MONTH) +  ".");
-        Out = Out.concat(TimeToCompleteBy.get(Calendar.HOUR_OF_DAY) + ".");
-        Out = Out.concat(TimeToCompleteBy.get(Calendar.MINUTE) + ".");*/
-
-
-        return Out;
+        return code;
     }
 
     //Accessor Functions

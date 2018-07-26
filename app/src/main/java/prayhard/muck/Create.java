@@ -3,7 +3,6 @@ package prayhard.muck;
 import android.app.DatePickerDialog;
 
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
@@ -37,6 +36,8 @@ public class Create extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+
         //widgets
         Switch hasDate;
         Switch setReminder;
@@ -49,7 +50,6 @@ public class Create extends AppCompatActivity {
         dateToCompleteBy = Calendar.getInstance(); // set to current day and time as default
         dateStatus = false;
         notificationStatus = false;
-
 
         //assign
         updateDay(  dateToCompleteBy.get(Calendar.YEAR), dateToCompleteBy.get(Calendar.MONTH), dateToCompleteBy.get(Calendar.DAY_OF_MONTH));
@@ -235,14 +235,21 @@ public class Create extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
 
-        //write file to database
+
+        //write file to database, create notification
         if (flag) {
 
             MuckFileExec.writeToDataBase(this, mishToWrite);
 
+            //only create notification if it needs to be sent in the future
+            if(mishToWrite.getIsReminder())
+                MuckNotificationExec.createNotification(this, mishToWrite);
+
             //end Activity
             finish();
         }
+
+
     }
 
     private Mish createMishViaForm() throws FormException{
@@ -304,7 +311,6 @@ public class Create extends AppCompatActivity {
             title = body;
             body = "";
         }
-
 
         //return new mish based on data
         return new Mish(timeToCompleteBy, creatorID, title, body, hasDate, isReminder);

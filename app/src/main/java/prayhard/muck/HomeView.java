@@ -67,7 +67,6 @@ public class HomeView extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -114,12 +113,10 @@ public class HomeView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     public void runCreate(){
 
         startActivity(new Intent(this, Create.class));
     }
-
 
     public void setList(){
 
@@ -138,7 +135,8 @@ public class HomeView extends AppCompatActivity {
 
         //assign
         Mishes = MuckFileExec.parseMishes(
-               this, MuckFileExec.read(this));
+               this,
+                MuckFileExec.read(this));
 
         for(int i = 0; i < Mishes.size(); i++)
             ids.add(Mishes.get(i).getUniversalID());

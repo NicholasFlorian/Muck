@@ -1,12 +1,7 @@
 package prayhard.muck;
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Constraints;
-import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +16,9 @@ import java.util.Vector;
 public class MishArrayAdapter<T> extends ArrayAdapter {
 
     //A little sloppy, but KISS
-    private final ContextWrapper activity;
-    private final Vector<Mish> mishes;
 
+    private final Vector<Mish> mishes;
+    private final ContextWrapper activity;
 
     public MishArrayAdapter(ContextWrapper activity, Vector<Mish> mishes, List<String> ids){
         super(activity, -1, ids);
@@ -91,7 +86,7 @@ public class MishArrayAdapter<T> extends ArrayAdapter {
         }
         else {
 
-            due.setText("Due in " + MuckWrite.countDown(display.getTimeToCompleteBy())+ " (" + MuckWrite.date(display.getTimeToCompleteBy()) + ")");
+            due.setText(MuckWrite.countDown(display.getTimeToCompleteBy())+ " (" + MuckWrite.date(display.getTimeToCompleteBy()) + ")");
         }
 
 

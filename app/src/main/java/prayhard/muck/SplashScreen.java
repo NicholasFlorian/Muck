@@ -1,6 +1,8 @@
 package prayhard.muck;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +15,8 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        //create the setup for an initial file
+        setUp();
+
         //todo hard coded preference, fine 4 now
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
@@ -39,6 +42,10 @@ public class SplashScreen extends AppCompatActivity {
         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
                 .putBoolean("isFirstRun", false).apply();
 
+
+        //create the setup for an initial file
+
+
         //delay and run homeview
         splosh(0.7);
 
@@ -46,6 +53,16 @@ public class SplashScreen extends AppCompatActivity {
 
     void firstTimeSetUp() {
 
+
+    }
+
+    void setUp(){
+
+        //create notification channel
+        MuckNotificationExec.createNotificationChannel(this);
+
+        //MuckNotificationExec m = new MuckNotificationExec();
+        //registerReceiver(m, new IntentFilter());
     }
 
     void splosh(double seconds) {

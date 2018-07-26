@@ -6,7 +6,13 @@ import java.util.Calendar;
 
 public class MuckWrite {
 
-    //public static char
+    static final long few    = 25000L;
+    static final long minute = 60000L;
+    static final long hour   = 3600000L;
+    static final long day    = 86400000L;
+    static final long month  = 2592000000L;
+    static final long year   = 31557600000L;
+
 
     @NonNull
     public static String day(Calendar dayToWrite) {
@@ -155,28 +161,79 @@ public class MuckWrite {
 
     }
 
-    public static String countDown(Calendar toWrite){
+    public static String twoDig(int toFix){
+
+        String out;
+
+        out = "" + toFix;
+
+        if(out.length() == 1)
+            return 0 + out;
+        else
+            return out;
+    }
+
+    public static String countDown(Calendar toWrite) {
 
         //obj
         Calendar currentTime;
 
         //var
         String out;
+        String prefix;
+        String suffix;
+
         Long difference;
 
 
         //assign
         currentTime = Calendar.getInstance();
 
+        //determine past/present
         difference = toWrite.getTimeInMillis() - currentTime.getTimeInMillis();
+        if (difference < 0) {
+
+            difference = difference * -1;
+            prefix = "Was due ";
+            suffix = " ago.";
+        } else {
+
+            prefix = "Due in ";
+            suffix = ".";
+        }
 
 
-        //complex way to get in
+        //find the amount of time
+        if(difference < few)
+            out = "in a few seconds";
+        else if(difference < minute)
+            out = "a minute";
+        else if(difference < minute * 5)
+            out = "5 minutes";
+        else if(difference < minute * 10)
+            out = "10 minutes";
+        else if(difference < minute * 30)
+            out = "half an hour";
+        else if(difference < hour)
+            out = "an hour";
+        else if(difference < hour * 5)
+            out = "5 hours";
+        else if(difference < day)
+            out = "a week";
+        else if(difference < month)
+            out = "a month";
+        else if(difference < month * 11)
+            out = (int)Math.ceil(difference/(double)month) + " months";
+        else if(difference < year)
+            out = "a year";
+        else if(difference < 10 * year)
+            out = (int)Math.ceil(difference/(double)year) + " years";
+        else
+            out = "a long time";
 
 
-        return "A hot Minute";
-
-
+        //return count down
+        return prefix + out + suffix;
     }
 
 }

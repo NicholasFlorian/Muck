@@ -110,14 +110,12 @@ public class Settings extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new MainPreferenceFragment()).commit();
     }
 
-
-    /**
-     * This main settings is meant the be the only implementation of the settings
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class MainPreferenceFragment extends PreferenceFragment {
         @Override
